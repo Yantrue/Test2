@@ -3,21 +3,37 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>test2 Admin Login</title>
+  <title>test Dashboard</title>
   <link rel="stylesheet" href="style.css" />
 </head>
-<body class="login-page">
-  <div class="login-container">
-    <h1>test2</h1>
-    <p>Silakan login untuk melanjutkan</p>
+<body>
+  <header>
+    <h2>Dashboard</h2>
+    <button id="logoutBtn">Logout</button>
+  </header>
 
-    <input type="text" id="username" placeholder="Username" autocomplete="off" />
-    <input type="password" id="password" placeholder="Password" autocomplete="off" />
-    <button onclick="login()">Login</button>
-    <p id="error" class="error-text"></p>
-  </div>
+  <main>
+    <section class="stats">
+      <div class="card">
+        <h3>Total Users</h3>
+        <p>1,234</p>
+      </div>
+      <div class="card">
+        <h3>Active Sessions</h3>
+        <p>567</p>
+      </div>
+      <div class="card">
+        <h3>Server Status</h3>
+        <p>Online</p>
+      </div>
+    </section>
+
+    <section class="welcome">
+      <h3>Selamat datang di panel test2</h3>
+      <p>Ini adalah dashboard sederhana untuk monitoring.</p>
+    </section>
+  </main>
 
   <script src="script.js"></script>
 </body>
 </html>
-
