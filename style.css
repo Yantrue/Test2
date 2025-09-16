@@ -1,55 +1,31 @@
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background: #f7f9fc;
+  padding: 20px;
+  color: #333;
+  margin: 0;
+}
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+#container {
+  display: flex;
+  gap: 40px;
+  justify-content: center;
+  align-items: flex-start;
+  max-width: 900px;
+  margin: 0 auto;
+  flex-wrap: wrap;
+}
+
+#rouletteArea {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 20px;
-  color: #333;
 }
-h1 {
-  margin-bottom: 10px;
-}
-#inputArea {
-  margin-bottom: 20px;
-  display: flex;
-  gap: 10px;
-}
-input[type="text"] {
-  padding: 8px 12px;
-  border: 1.5px solid #a1c4fd;
-  border-radius: 6px;
-  font-size: 16px;
-  width: 200px;
-  transition: border-color 0.3s;
-}
-input[type="text"]:focus {
-  border-color: #4a90e2;
-  outline: none;
-}
-button {
-  background-color: #6ca0dc;
-  border: none;
-  color: white;
-  padding: 10px 16px;
-  border-radius: 6px;
-  font-size: 16px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-button:hover:not(:disabled) {
-  background-color: #4a90e2;
-}
-button:disabled {
-  background-color: #a7c0e8;
-  cursor: not-allowed;
-}
-#namesList {
-  margin-bottom: 30px;
-  min-height: 30px;
-  font-weight: 600;
-  color: #4a90e2;
-}
+
 #roulette {
   position: relative;
   width: 350px;
@@ -69,6 +45,7 @@ button:disabled {
   align-items: center;
   justify-content: center;
 }
+
 #pointer {
   position: absolute;
   top: -20px;
@@ -81,13 +58,75 @@ button:disabled {
   border-bottom: 20px solid #4a90e2;
   filter: drop-shadow(0 1px 2px rgba(0,0,0,0.2));
 }
+
 #wheelCanvas {
   border-radius: 50%;
 }
+
 #result {
   margin-top: 20px;
   font-size: 24px;
   font-weight: 700;
   color: #4a90e2;
   min-height: 30px;
+  text-align: center;
+  min-width: 300px;
+}
+
+#inputArea {
+  display: flex;
+  flex-direction: column;
+  max-width: 350px;
+  width: 100%;
+}
+
+#namesTextarea {
+  height: 220px;
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 6px;
+  border: 1.5px solid #a1c4fd;
+  resize: vertical;
+  margin-bottom: 10px;
+  font-family: inherit;
+  color: #333;
+  transition: border-color 0.3s;
+}
+
+#namesTextarea:focus {
+  border-color: #4a90e2;
+  outline: none;
+}
+
+button {
+  background-color: #6ca0dc;
+  border: none;
+  color: white;
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-bottom: 10px;
+}
+
+button:hover:not(:disabled) {
+  background-color: #4a90e2;
+}
+
+button:disabled {
+  background-color: #a7c0e8;
+  cursor: not-allowed;
+}
+
+#namesList {
+  min-height: 80px;
+  font-weight: 600;
+  color: #4a90e2;
+  white-space: pre-wrap;
+  border: 1px solid #cde3fb;
+  padding: 8px;
+  border-radius: 6px;
+  background: #e7f0fe;
+  overflow-y: auto;
 }
