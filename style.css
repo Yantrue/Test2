@@ -2,9 +2,11 @@ body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background: #f7f9fc;
   padding: 20px;
-  color: #333;
   margin: 0;
+  color: #333;
+  user-select: none;
 }
+
 h1 {
   text-align: center;
   margin-bottom: 20px;
@@ -13,42 +15,29 @@ h1 {
 #container {
   display: flex;
   gap: 40px;
-  justify-content: center;
-  align-items: flex-start;
   max-width: 900px;
   margin: 0 auto;
   flex-wrap: wrap;
+  justify-content: center;
 }
 
 #rouletteArea {
+  position: relative;
+  width: 350px;
+  height: 400px;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-#roulette {
-  position: relative;
-  width: 350px;
-  height: 350px;
+#wheelCanvas {
   border-radius: 50%;
-  background: conic-gradient(
-    from 0deg,
-    #a1c4fd 0deg 60deg,
-    #c2e9fb 60deg 120deg,
-    #a1c4fd 120deg 180deg,
-    #c2e9fb 180deg 240deg,
-    #a1c4fd 240deg 300deg,
-    #c2e9fb 300deg 360deg
-  );
-  box-shadow: 0 0 20px rgba(74,144,226,0.4);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  box-shadow: 0 0 20px rgba(74, 144, 226, 0.4);
 }
 
 #pointer {
   position: absolute;
-  top: -20px;
+  top: 0;
   left: 50%;
   transform: translateX(-50%);
   width: 0; 
@@ -57,15 +46,12 @@ h1 {
   border-right: 15px solid transparent;
   border-bottom: 20px solid #4a90e2;
   filter: drop-shadow(0 1px 2px rgba(0,0,0,0.2));
-}
-
-#wheelCanvas {
-  border-radius: 50%;
+  z-index: 10;
 }
 
 #result {
-  margin-top: 20px;
-  font-size: 24px;
+  margin-top: 15px;
+  font-size: 22px;
   font-weight: 700;
   color: #4a90e2;
   min-height: 30px;
@@ -74,10 +60,10 @@ h1 {
 }
 
 #inputArea {
-  display: flex;
-  flex-direction: column;
   max-width: 350px;
   width: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 #namesTextarea {
