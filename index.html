@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>wish spin</title>
+<title>Roulette Nama</title>
 <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-<h1>Wish spin</h1>
+<h1>Roulette Nama</h1>
 
 <div id="container">
   <div id="rouletteArea">
@@ -21,9 +21,20 @@
 
   <div id="inputArea">
     <textarea id="namesTextarea" placeholder="Masukkan nama, satu per baris..."></textarea>
-    <button id="loadNamesBtn">Tambah</button>
-    <button id="spinBtn" disabled>Start</button>
+    <button id="loadNamesBtn">Muat Nama</button>
+    <button id="spinBtn" disabled>Putar Roulette</button>
     <div id="namesList"></div>
+  </div>
+</div>
+
+<!-- Popup hasil -->
+<div id="popup" class="hidden">
+  <div id="popupContent">
+    <p id="popupMessage"></p>
+    <div id="popupButtons">
+      <button id="popupOkBtn">Oke</button>
+      <button id="popupRemoveBtn">Hapus nama</button>
+    </div>
   </div>
 </div>
 
