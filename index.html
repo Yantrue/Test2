@@ -6,54 +6,108 @@
   <title>Roulette Nama</title>
   <style>
     body {
-      font-family: sans-serif;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background: #f7f9fc;
-      margin: 0;
       padding: 20px;
+      margin: 0;
       color: #333;
     }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
     #container {
       display: flex;
       gap: 40px;
-      max-width: 900px;
+      max-width: 1000px;
       margin: 0 auto;
       flex-wrap: wrap;
       justify-content: center;
     }
+
     #rouletteArea {
       position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
+
+    #wheelCanvas {
+      border-radius: 50%;
+      box-shadow: 0 0 20px rgba(74, 144, 226, 0.2);
+    }
+
     #pointer {
       position: absolute;
       top: 0;
       left: 50%;
       transform: translateX(-50%);
-      width: 0; 
-      height: 0; 
+      width: 0;
+      height: 0;
       border-left: 15px solid transparent;
       border-right: 15px solid transparent;
       border-bottom: 20px solid #4a90e2;
       z-index: 10;
     }
+
     #result {
-      text-align: center;
       margin-top: 10px;
+      font-size: 20px;
       font-weight: bold;
-      font-size: 18px;
       color: #4a90e2;
+      min-height: 30px;
     }
+
     textarea {
       width: 100%;
-      height: 200px;
-      margin-bottom: 10px;
+      height: 220px;
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 6px;
+      border: 1.5px solid #a1c4fd;
+      resize: vertical;
+      font-family: inherit;
     }
+
     button {
-      margin-right: 10px;
+      background-color: #6ca0dc;
+      border: none;
+      color: white;
+      padding: 10px 16px;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s;
       margin-bottom: 10px;
     }
+
+    button:hover:not(:disabled) {
+      background-color: #4a90e2;
+    }
+
+    button:disabled {
+      background-color: #a7c0e8;
+      cursor: not-allowed;
+    }
+
+    #namesList {
+      white-space: pre-wrap;
+      background: #e7f0fe;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #cde3fb;
+      color: #333;
+      font-weight: bold;
+      height: 220px;
+      overflow-y: auto;
+    }
+
     #popup {
       position: fixed;
-      top: 0; left: 0;
+      top: 0;
+      left: 0;
       width: 100vw;
       height: 100vh;
       background: rgba(0,0,0,0.5);
@@ -62,11 +116,48 @@
       justify-content: center;
       z-index: 1000;
     }
+
     #popupContent {
       background: white;
-      padding: 20px;
+      padding: 25px 30px;
       border-radius: 10px;
+      max-width: 300px;
       text-align: center;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+
+    #popupButtons {
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    #popupButtons button {
+      padding: 8px 18px;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      border: none;
+      transition: background-color 0.3s;
+    }
+
+    #popupOkBtn {
+      background-color: #6ca0dc;
+      color: white;
+    }
+
+    #popupOkBtn:hover {
+      background-color: #4a90e2;
+    }
+
+    #popupRemoveBtn {
+      background-color: #e25c5c;
+      color: white;
+    }
+
+    #popupRemoveBtn:hover {
+      background-color: #b33c3c;
     }
   </style>
 </head>
@@ -76,25 +167,26 @@
 
   <div id="container">
     <div id="rouletteArea">
-      <canvas id="wheelCanvas" width="300" height="300"></canvas>
+      <canvas id="wheelCanvas" width="350" height="350"></canvas>
       <div id="pointer"></div>
       <div id="result"></div>
     </div>
 
-    <div>
-      <textarea id="namesTextarea" placeholder="Masukkan nama (satu per baris)"></textarea>
-      <br>
+    <div style="max-width: 350px; width: 100%;">
+      <textarea id="namesTextarea" placeholder="Masukkan nama, satu per baris..."></textarea>
       <button id="loadNamesBtn">Muat Nama</button>
       <button id="spinBtn" disabled>Putar Roulette</button>
-      <div id="namesList">Belum ada nama dimuat</div>
+      <div id="namesList">Belum ada nama dimuat.</div>
     </div>
   </div>
 
   <div id="popup">
     <div id="popupContent">
       <p id="popupMessage"></p>
-      <button id="popupOkBtn">Oke</button>
-      <button id="popupRemoveBtn">Hapus Nama</button>
+      <div id="popupButtons">
+        <button id="popupOkBtn">Oke</button>
+        <button id="popupRemoveBtn">Hapus nama</button>
+      </div>
     </div>
   </div>
 
@@ -125,34 +217,39 @@
       if (names.length === 0) {
         namesList.textContent = 'Belum ada nama dimuat.';
         spinBtn.disabled = true;
-      } else {
-        namesList.textContent = names.join('\n');
-        spinBtn.disabled = false;
+        return;
       }
+      namesList.textContent = names.join('\n');
+      spinBtn.disabled = false;
     }
 
     function drawWheel() {
-      const outsideRadius = 130;
-      const textRadius = 100;
-      const insideRadius = 30;
+      const outsideRadius = 160;
+      const textRadius = 120;
+      const insideRadius = 50;
 
       arc = Math.PI * 2 / names.length;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      ctx.strokeStyle = '#4a90e2';
+      ctx.lineWidth = 2;
+      ctx.font = 'bold 16px Segoe UI';
 
       for (let i = 0; i < names.length; i++) {
         const angle = startAngle + i * arc;
         ctx.fillStyle = i % 2 === 0 ? '#a1c4fd' : '#c2e9fb';
 
         ctx.beginPath();
-        ctx.arc(150, 150, outsideRadius, angle, angle + arc, false);
-        ctx.arc(150, 150, insideRadius, angle + arc, angle, true);
+        ctx.arc(175, 175, outsideRadius, angle, angle + arc, false);
+        ctx.arc(175, 175, insideRadius, angle + arc, angle, true);
         ctx.closePath();
         ctx.fill();
+        ctx.stroke();
 
         ctx.save();
-        ctx.fillStyle = "#333";
-        ctx.translate(150 + Math.cos(angle + arc / 2) * textRadius,
-                      150 + Math.sin(angle + arc / 2) * textRadius);
+        ctx.fillStyle = '#333';
+        ctx.translate(175 + Math.cos(angle + arc / 2) * textRadius,
+                      175 + Math.sin(angle + arc / 2) * textRadius);
         ctx.rotate(angle + arc / 2 + Math.PI / 2);
         ctx.fillText(names[i], -ctx.measureText(names[i]).width / 2, 0);
         ctx.restore();
@@ -185,7 +282,7 @@
 
     function easeOut(t, b, c, d) {
       t /= d;
-      return -c * t*(t-2) + b;
+      return -c * t * (t - 2) + b;
     }
 
     loadNamesBtn.addEventListener('click', () => {
@@ -223,10 +320,9 @@
       spinBtn.disabled = names.length === 0;
       loadNamesBtn.disabled = false;
       namesTextarea.disabled = false;
-      if (names.length === 0) {
-        result.textContent = '';
-      }
+      if (names.length === 0) result.textContent = '';
     });
   </script>
+
 </body>
 </html>
