@@ -4,10 +4,168 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Roulette Nama</title>
-  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f7f9fc;
+      padding: 20px;
+      margin: 0;
+      color: #333;
+      user-select: none;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    #container {
+      display: flex;
+      gap: 40px;
+      max-width: 900px;
+      margin: 0 auto;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    #rouletteArea {
+      position: relative;
+      width: 350px;
+      height: 400px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    #wheelCanvas {
+      border-radius: 50%;
+      box-shadow: 0 0 20px rgba(74, 144, 226, 0.4);
+    }
+    #pointer {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 15px solid transparent;
+      border-right: 15px solid transparent;
+      border-bottom: 20px solid #4a90e2;
+      filter: drop-shadow(0 1px 2px rgba(0,0,0,0.2));
+      z-index: 10;
+    }
+    #result {
+      margin-top: 15px;
+      font-size: 22px;
+      font-weight: 700;
+      color: #4a90e2;
+      min-height: 30px;
+      text-align: center;
+      min-width: 300px;
+    }
+    #inputArea {
+      max-width: 350px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+    #namesTextarea {
+      height: 220px;
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 6px;
+      border: 1.5px solid #a1c4fd;
+      resize: vertical;
+      margin-bottom: 10px;
+      font-family: inherit;
+      color: #333;
+      transition: border-color 0.3s;
+    }
+    #namesTextarea:focus {
+      border-color: #4a90e2;
+      outline: none;
+    }
+    button {
+      background-color: #6ca0dc;
+      border: none;
+      color: white;
+      padding: 10px 16px;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      margin-bottom: 10px;
+    }
+    button:hover:not(:disabled) {
+      background-color: #4a90e2;
+    }
+    button:disabled {
+      background-color: #a7c0e8;
+      cursor: not-allowed;
+    }
+    #namesList {
+      min-height: 80px;
+      font-weight: 600;
+      color: #4a90e2;
+      white-space: pre-wrap;
+      border: 1px solid #cde3fb;
+      padding: 8px;
+      border-radius: 6px;
+      background: #e7f0fe;
+      overflow-y: auto;
+    }
+    #popup {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    .hidden {
+      display: none;
+    }
+    #popupContent {
+      background: white;
+      padding: 25px 30px;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      max-width: 320px;
+      text-align: center;
+      font-size: 18px;
+      color: #333;
+    }
+    #popupButtons {
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+    #popupButtons button {
+      padding: 8px 18px;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      border: none;
+      transition: background-color 0.3s;
+    }
+    #popupOkBtn {
+      background-color: #6ca0dc;
+      color: white;
+    }
+    #popupOkBtn:hover {
+      background-color: #4a90e2;
+    }
+    #popupRemoveBtn {
+      background-color: #e25c5c;
+      color: white;
+    }
+    #popupRemoveBtn:hover {
+      background-color: #b33c3c;
+    }
+  </style>
 </head>
 <body>
-
   <h1>Roulette Nama</h1>
 
   <div id="container">
@@ -25,7 +183,6 @@
     </div>
   </div>
 
-  <!-- Popup, disembunyikan di awal -->
   <div id="popup" class="hidden">
     <div id="popupContent">
       <p id="popupMessage"></p>
@@ -36,6 +193,151 @@
     </div>
   </div>
 
-  <script src="script.js"></script>
+  <script>
+    const namesTextarea = document.getElementById('namesTextarea');
+    const loadNamesBtn = document.getElementById('loadNamesBtn');
+    const spinBtn = document.getElementById('spinBtn');
+    const namesList = document.getElementById('namesList');
+    const result = document.getElementById('result');
+    const canvas = document.getElementById('wheelCanvas');
+    const ctx = canvas.getContext('2d');
+    const popup = document.getElementById('popup');
+    const popupMessage = document.getElementById('popupMessage');
+    const popupOkBtn = document.getElementById('popupOkBtn');
+    const popupRemoveBtn = document.getElementById('popupRemoveBtn');
+
+    let names = [];
+    let startAngle = 0;
+    let arc = 0;
+    let spinTimeout = null;
+    let spinAngleStart = 0;
+    let spinTime = 0;
+    let spinTimeTotal = 0;
+    let winner = '';
+
+    function updateNamesList() {
+      if (names.length === 0) {
+        namesList.textContent = 'Belum ada nama dimuat.';
+        spinBtn.disabled = true;
+        return;
+      }
+      namesList.textContent = names.join('\n');
+      spinBtn.disabled = false;
+    }
+
+    function drawWheel() {
+      if (names.length === 0) return;
+
+      const outsideRadius = 160;
+      const textRadius = 120;
+      const insideRadius = 50;
+
+      arc = Math.PI * 2 / names.length;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      ctx.strokeStyle = '#4a90e2';
+      ctx.lineWidth = 2;
+      ctx.font = 'bold 16px Segoe UI';
+
+      for (let i = 0; i < names.length; i++) {
+        const angle = startAngle + i * arc;
+        ctx.fillStyle = (i % 2 === 0) ? '#a1c4fd' : '#c2e9fb';
+
+        ctx.beginPath();
+        ctx.arc(canvas.width / 2, canvas.height / 2, outsideRadius, angle, angle + arc, false);
+        ctx.arc(canvas.width / 2, canvas.height / 2, insideRadius, angle + arc, angle, true);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.save();
+        ctx.fillStyle = '#333';
+        ctx.translate(
+          canvas.width / 2 + Math.cos(angle + arc / 2) * textRadius,
+          canvas.height / 2 + Math.sin(angle + arc / 2) * textRadius
+        );
+        ctx.rotate(angle + arc / 2 + Math.PI / 2);
+        ctx.fillText(names[i], -ctx.measureText(names[i]).width / 2, 0);
+        ctx.restore();
+      }
+    }
+
+    function rotateWheel() {
+      spinTime += 30;
+      if (spinTime >= spinTimeTotal) {
+        stopRotateWheel();
+        return;
+      }
+      const spinAngle = spinAngleStart - easeOut(spinTime, 0, spinAngleStart, spinTimeTotal);
+      startAngle += (spinAngle * Math.PI / 180);
+      drawWheel();
+      spinTimeout = setTimeout(rotateWheel, 30);
+    }
+
+    function stopRotateWheel() {
+      clearTimeout(spinTimeout);
+      const degrees = (startAngle * 180 / Math.PI) + 90;
+      const arcd = arc * 180 / Math.PI;
+      const index = Math.floor((360 - (degrees % 360)) / arcd);
+      winner = names[index];
+
+      result.textContent = `Selamat kepada ${winner}!`;
+
+      popupMessage.textContent = `Selamat kepada ${winner}!`;
+      popup.classList.remove('hidden');
+    }
+
+    function easeOut(t, b, c, d) {
+      t /= d;
+      return -c * t * (t - 2) + b;
+    }
+
+    loadNamesBtn.addEventListener('click', () => {
+      const raw = namesTextarea.value.trim();
+      if (!raw) {
+        alert('Masukkan minimal satu nama.');
+        return;
+      }
+      const inputNames = raw.split('\n')
+        .map(n => n.trim())
+        .filter(n => n.length > 0);
+
+      names = [...new Set(inputNames)];
+      updateNamesList();
+      drawWheel();
+    });
+
+    spinBtn.addEventListener('click', () => {
+      if (names.length === 0) return;
+      spinAngleStart = Math.floor(3600 + Math.random() * 360);
+      spinTime = 0;
+      spinTimeTotal = 8000;
+      spinBtn.disabled = true;
+      loadNamesBtn.disabled = true;
+      namesTextarea.disabled = true;
+      result.textContent = '';
+      rotateWheel();
+    });
+
+    popupOkBtn.addEventListener('click', () => {
+      popup.classList.add('hidden');
+      spinBtn.disabled = names.length === 0;
+      loadNamesBtn.disabled = false;
+      namesTextarea.disabled = false;
+    });
+
+    popupRemoveBtn.addEventListener('click', () => {
+      names = names.filter(n => n !== winner);
+      updateNamesList();
+      drawWheel();
+      popup.classList.add('hidden');
+      spinBtn.disabled = names.length === 0;
+      loadNamesBtn.disabled = false;
+      namesTextarea.disabled = false;
+      if (names.length === 0) {
+        result.textContent = '';
+      }
+    });
+  </script>
 </body>
 </html>
