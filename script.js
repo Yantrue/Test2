@@ -1,5 +1,5 @@
-const nameInput = document.getElementById('nameInput');
-const addNameBtn = document.getElementById('addNameBtn');
+const namesTextarea = document.getElementById('namesTextarea');
+const loadNamesBtn = document.getElementById('loadNamesBtn');
 const spinBtn = document.getElementById('spinBtn');
 const namesList = document.getElementById('namesList');
 const result = document.getElementById('result');
@@ -14,19 +14,22 @@ let spinAngleStart = 0;
 let spinTime = 0;
 let spinTimeTotal = 0;
 
-// Fungsi update tampilan list nama
+// Update daftar nama yang tampil di kotak sebelah
 function updateNamesList() {
   if(names.length === 0) {
-    namesList.textContent = 'Belum ada nama ditambahkan.';
+    namesList.textContent = 'Belum ada nama dimuat.';
     spinBtn.disabled = true;
     return;
   }
-  namesList.textContent = 'Nama yang dimasukkan: ' + names.join(', ');
+  // tampilkan nama satu per baris
+  namesList.textContent = names.join('\n');
   spinBtn.disabled = false;
 }
 
-// Fungsi gambar roda roulette
+// Gambar roda roulette sesuai daftar nama
 function drawWheel() {
+  if(names.length === 0) return;
+
   const outsideRadius = 160;
   const textRadius = 120;
   const insideRadius = 50;
@@ -41,7 +44,6 @@ function drawWheel() {
 
   for(let i = 0; i < names.length; i++) {
     const angle = startAngle + i * arc;
-    // Warna tiap slice bergantian
     ctx.fillStyle = i % 2 === 0 ? '#a1c4fd' : '#c2e9fb';
 
     ctx.beginPath();
@@ -51,7 +53,6 @@ function drawWheel() {
     ctx.fill();
     ctx.stroke();
 
-    // Tulisan nama
     ctx.save();
     ctx.fillStyle = '#333';
     ctx.translate(
@@ -64,7 +65,7 @@ function drawWheel() {
   }
 }
 
-// Fungsi animasi putar
+// Animasi putar roda
 function rotateWheel() {
   spinTime += 30;
   if(spinTime >= spinTimeTotal) {
@@ -77,15 +78,20 @@ function rotateWheel() {
   spinTimeout = setTimeout(rotateWheel, 30);
 }
 
+// Stop dan tunjukkan hasil
 function stopRotateWheel() {
   clearTimeout(spinTimeout);
   const degrees = startAngle * 180 / Math.PI + 90;
   const arcd = arc * 180 / Math.PI;
   const index = Math.floor((360 - (degrees % 360)) / arcd);
-  result.textContent = 'Hasil: ' + names[index];
+  const winner = names[index];
+
+  result.textContent = `Selamat kepada ${winner}!`;
+  alert(`Selamat kepada ${winner}! 🎉`);
+
   spinBtn.disabled = false;
-  addNameBtn.disabled = false;
-  nameInput.disabled = false;
+  loadNamesBtn.disabled = false;
+  namesTextarea.disabled = false;
 }
 
 // Fungsi easing untuk animasi halus
@@ -95,27 +101,37 @@ function easeOut(t, b, c, d) {
   return b + c*(tc + -3*ts + 3*t);
 }
 
-// Event tambah nama
-addNameBtn.addEventListener('click', () => {
-  const name = nameInput.value.trim();
-  if(name && !names.includes(name)) {
-    names.push(name);
-    updateNamesList();
-    drawWheel();
-    nameInput.value = '';
-    nameInput.focus();
+// Event muat nama dari textarea ke array
+loadNamesBtn.addEventListener('click', () => {
+  const raw = namesTextarea.value.trim();
+  if(!raw) {
+    alert('Masukkan minimal satu nama.');
+    return;
   }
+  const inputNames = raw.split('\n')
+    .map(n => n.trim())
+    .filter(n => n.length > 0);
+
+  if(inputNames.length === 0) {
+    alert('Masukkan minimal satu nama.');
+    return;
+  }
+
+  // Hilangkan duplikat
+  names = [...new Set(inputNames)];
+  updateNamesList();
+  drawWheel();
 });
 
 // Event putar roulette
 spinBtn.addEventListener('click', () => {
   if(names.length === 0) return;
-  spinAngleStart = Math.floor(3600 + Math.random() * 360); // Putaran total antara 10-11 kali
+  spinAngleStart = Math.floor(3600 + Math.random() * 360); // 10-11 putaran penuh
   spinTime = 0;
-  spinTimeTotal = 4000; // durasi 4 detik
+  spinTimeTotal = 4000; // 4 detik durasi
   spinBtn.disabled = true;
-  addNameBtn.disabled = true;
-  nameInput.disabled = true;
+  loadNamesBtn.disabled = true;
+  namesTextarea.disabled = true;
   result.textContent = '';
   rotateWheel();
 });
