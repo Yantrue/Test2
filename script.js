@@ -74,7 +74,7 @@ function rotateWheel() {
     stopRotateWheel();
     return;
   }
-  const spinAngle = spinAngleStart - easeOut(spinTime, 0, spinAngleStart, spinTimeTotal);
+  const spinAngle = easeOut(spinTime, 0, spinAngleStart, spinTimeTotal);
   startAngle += (spinAngle * Math.PI / 180);
   drawWheel();
   spinTimeout = setTimeout(rotateWheel, 30);
@@ -82,6 +82,8 @@ function rotateWheel() {
 
 function stopRotateWheel() {
   clearTimeout(spinTimeout);
+
+  // Tentukan pemenang
   const degrees = startAngle * 180 / Math.PI + 90;
   const arcd = arc * 180 / Math.PI;
   const index = Math.floor((360 - (degrees % 360)) / arcd);
@@ -89,17 +91,15 @@ function stopRotateWheel() {
 
   result.textContent = `Selamat kepada ${winner}!`;
 
-  popupMessage.textContent = `Selamat kepada ${winner}!`;
+  // Tampilkan popup
+  popupMessage.textContent = `Pemenang adalah: ${winner}`;
   popup.classList.remove('hidden');
-
-  spinBtn.disabled = true;
-  loadNamesBtn.disabled = true;
-  namesTextarea.disabled = true;
 }
 
 function easeOut(t, b, c, d) {
-  t /= d;
-  return -c * t*(t-2) + b;
+  const ts = (t /= d) * t;
+  const tc = ts * t;
+  return b + c * (tc + -3 * ts + 3 * t);
 }
 
 loadNamesBtn.addEventListener('click', () => {
@@ -126,7 +126,7 @@ spinBtn.addEventListener('click', () => {
   if(names.length === 0) return;
   spinAngleStart = Math.floor(3600 + Math.random() * 360);
   spinTime = 0;
-  spinTimeTotal = 8000;
+  spinTimeTotal = 8000; // 8 detik
   spinBtn.disabled = true;
   loadNamesBtn.disabled = true;
   namesTextarea.disabled = true;
@@ -134,7 +134,7 @@ spinBtn.addEventListener('click', () => {
   rotateWheel();
 });
 
-// Popup tombol Oke
+// Tombol popup Oke
 popupOkBtn.addEventListener('click', () => {
   popup.classList.add('hidden');
   spinBtn.disabled = names.length === 0;
@@ -142,7 +142,7 @@ popupOkBtn.addEventListener('click', () => {
   namesTextarea.disabled = false;
 });
 
-// Popup tombol Hapus nama
+// Tombol popup Hapus nama (hapus pemenang)
 popupRemoveBtn.addEventListener('click', () => {
   names = names.filter(n => n !== winner);
   updateNamesList();
@@ -158,5 +158,7 @@ popupRemoveBtn.addEventListener('click', () => {
   }
 });
 
-// Inisialisasi
-updateNamesList();
+// Sembunyikan popup saat load halaman
+window.onload = () => {
+  popup.classList.add('hidden');
+};
