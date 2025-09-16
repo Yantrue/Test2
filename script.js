@@ -20,12 +20,12 @@ let spinTime = 0;
 let spinTimeTotal = 0;
 let winner = '';
 
-// Sembunyikan popup pada load halaman
+// agar popup hidden di awal
 window.addEventListener('DOMContentLoaded', () => {
   popup.classList.add('hidden');
 });
 
-// Fungsi update daftar nama
+// update daftar nama
 function updateNamesList() {
   if (names.length === 0) {
     namesList.textContent = 'Belum ada nama dimuat.';
@@ -36,7 +36,7 @@ function updateNamesList() {
   spinBtn.disabled = false;
 }
 
-// Fungsi gambar roda
+// gambar roda
 function drawWheel() {
   if (names.length === 0) return;
 
@@ -74,7 +74,7 @@ function drawWheel() {
   }
 }
 
-// Animasi putar
+// animasi putar
 function rotateWheel() {
   spinTime += 30;
   if (spinTime >= spinTimeTotal) {
@@ -87,7 +87,7 @@ function rotateWheel() {
   spinTimeout = setTimeout(rotateWheel, 30);
 }
 
-// Setelah selesai putar
+// selesai putar
 function stopRotateWheel() {
   clearTimeout(spinTimeout);
   const degrees = (startAngle * 180 / Math.PI) + 90;
@@ -97,18 +97,18 @@ function stopRotateWheel() {
 
   result.textContent = `Selamat kepada ${winner}!`;
 
-  // Tampilkan popup hanya disini
+  // tampilkan popup di sini
   popupMessage.textContent = `Selamat kepada ${winner}!`;
   popup.classList.remove('hidden');
 }
 
-// fungsi easing
+// easing
 function easeOut(t, b, c, d) {
   t /= d;
   return -c * t * (t - 2) + b;
 }
 
-// Event load/muat nama
+// muat nama
 loadNamesBtn.addEventListener('click', () => {
   const raw = namesTextarea.value.trim();
   if (!raw) {
@@ -129,7 +129,7 @@ loadNamesBtn.addEventListener('click', () => {
   drawWheel();
 });
 
-// Event putar
+// putar roulette
 spinBtn.addEventListener('click', () => {
   if (names.length === 0) return;
   spinAngleStart = Math.floor(3600 + Math.random() * 360);
@@ -142,18 +142,16 @@ spinBtn.addEventListener('click', () => {
   rotateWheel();
 });
 
-// Oke tombol popup
+// tombol Oke popup
 popupOkBtn.addEventListener('click', () => {
   popup.classList.add('hidden');
-  // re-enable input dan tombol
   spinBtn.disabled = names.length === 0;
   loadNamesBtn.disabled = false;
   namesTextarea.disabled = false;
 });
 
-// Hapus nama tombol popup
+// tombol Hapus nama popup
 popupRemoveBtn.addEventListener('click', () => {
-  // Hapus hanya yang menang
   names = names.filter(n => n !== winner);
   updateNamesList();
   drawWheel();
