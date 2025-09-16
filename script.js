@@ -147,8 +147,8 @@ spinBtn.addEventListener('click', () => {
 
 // Tombol Oke popup
 popupOkBtn.addEventListener('click', () => {
+  console.log('Tombol Oke ditekan');
   popup.classList.add('hidden');
-  // enable tombol dan textarea lagi
   spinBtn.disabled = false;
   loadNamesBtn.disabled = false;
   namesTextarea.disabled = false;
@@ -156,17 +156,15 @@ popupOkBtn.addEventListener('click', () => {
 
 // Tombol Hapus nama popup
 popupRemoveBtn.addEventListener('click', () => {
-  // hapus nama pemenang dari array
+  console.log('Tombol Hapus nama ditekan');
   names = names.filter(n => n !== winner);
   updateNamesList();
   drawWheel();
   popup.classList.add('hidden');
-  // enable tombol dan textarea lagi
   spinBtn.disabled = names.length === 0;
   loadNamesBtn.disabled = false;
   namesTextarea.disabled = false;
 
-  // Jika list kosong, kosongkan textarea dan result
   if(names.length === 0) {
     namesTextarea.value = '';
     result.textContent = '';
