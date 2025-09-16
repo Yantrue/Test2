@@ -99,4 +99,64 @@ function stopRotateWheel() {
 
 function easeOut(t, b, c, d) {
   t /= d;
-  return -c * t*(t-
+  return -c * t*(t-2) + b;
+}
+
+loadNamesBtn.addEventListener('click', () => {
+  const raw = namesTextarea.value.trim();
+  if(!raw) {
+    alert('Masukkan minimal satu nama.');
+    return;
+  }
+  const inputNames = raw.split('\n')
+    .map(n => n.trim())
+    .filter(n => n.length > 0);
+
+  if(inputNames.length === 0) {
+    alert('Masukkan minimal satu nama.');
+    return;
+  }
+
+  names = [...new Set(inputNames)];
+  updateNamesList();
+  drawWheel();
+});
+
+spinBtn.addEventListener('click', () => {
+  if(names.length === 0) return;
+  spinAngleStart = Math.floor(3600 + Math.random() * 360);
+  spinTime = 0;
+  spinTimeTotal = 8000;
+  spinBtn.disabled = true;
+  loadNamesBtn.disabled = true;
+  namesTextarea.disabled = true;
+  result.textContent = '';
+  rotateWheel();
+});
+
+// Popup tombol Oke
+popupOkBtn.addEventListener('click', () => {
+  popup.classList.add('hidden');
+  spinBtn.disabled = names.length === 0;
+  loadNamesBtn.disabled = false;
+  namesTextarea.disabled = false;
+});
+
+// Popup tombol Hapus nama
+popupRemoveBtn.addEventListener('click', () => {
+  names = names.filter(n => n !== winner);
+  updateNamesList();
+  drawWheel();
+  popup.classList.add('hidden');
+  spinBtn.disabled = names.length === 0;
+  loadNamesBtn.disabled = false;
+  namesTextarea.disabled = false;
+
+  if(names.length === 0) {
+    namesTextarea.value = '';
+    result.textContent = '';
+  }
+});
+
+// Inisialisasi
+updateNamesList();
