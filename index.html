@@ -1,43 +1,41 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Roulette Nama</title>
-<link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Roulette Nama</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-<h1>Roulette Nama</h1>
+  <h1>Roulette Nama</h1>
 
-<div id="container">
-  <div id="rouletteArea">
-    <div id="roulette">
+  <div id="container">
+    <div id="rouletteArea">
       <canvas id="wheelCanvas" width="350" height="350"></canvas>
       <div id="pointer"></div>
+      <div id="result"></div>
     </div>
-    <div id="result"></div>
-  </div>
 
-  <div id="inputArea">
-    <textarea id="namesTextarea" placeholder="Masukkan nama, satu per baris..."></textarea>
-    <button id="loadNamesBtn">Muat Nama</button>
-    <button id="spinBtn" disabled>Putar Roulette</button>
-    <div id="namesList"></div>
-  </div>
-</div>
-
-<!-- Popup hasil -->
-<div id="popup" class="hidden">
-  <div id="popupContent">
-    <p id="popupMessage"></p>
-    <div id="popupButtons">
-      <button id="popupOkBtn">Oke</button>
-      <button id="popupRemoveBtn">Hapus nama</button>
+    <div id="inputArea">
+      <textarea id="namesTextarea" placeholder="Masukkan nama, satu per baris..."></textarea>
+      <button id="loadNamesBtn">Muat Nama</button>
+      <button id="spinBtn" disabled>Putar Roulette</button>
+      <div id="namesList">Belum ada nama dimuat.</div>
     </div>
   </div>
-</div>
 
-<script src="script.js"></script>
+  <!-- Popup -->
+  <div id="popup" class="hidden">
+    <div id="popupContent">
+      <p id="popupMessage"></p>
+      <div id="popupButtons">
+        <button id="popupOkBtn">Oke</button>
+        <button id="popupRemoveBtn">Hapus nama</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>
