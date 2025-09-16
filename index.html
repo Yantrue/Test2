@@ -1,39 +1,30 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>test Dashboard</title>
-  <link rel="stylesheet" href="style.css" />
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Roulette Nama</title>
+<link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <header>
-    <h2>Dashboard</h2>
-    <button id="logoutBtn">Logout</button>
-  </header>
 
-  <main>
-    <section class="stats">
-      <div class="card">
-        <h3>Total Users</h3>
-        <p>1,234</p>
-      </div>
-      <div class="card">
-        <h3>Active Sessions</h3>
-        <p>567</p>
-      </div>
-      <div class="card">
-        <h3>Server Status</h3>
-        <p>Online</p>
-      </div>
-    </section>
+<h1>Roulette Nama</h1>
 
-    <section class="welcome">
-      <h3>Selamat datang di panel test2</h3>
-      <p>Ini adalah dashboard sederhana untuk monitoring.</p>
-    </section>
-  </main>
+<div id="inputArea">
+  <input type="text" id="nameInput" placeholder="Masukkan nama..." />
+  <button id="addNameBtn">Tambah</button>
+  <button id="spinBtn" disabled>Putar Roulette</button>
+</div>
 
-  <script src="script.js"></script>
+<div id="namesList"></div>
+
+<div id="roulette">
+  <canvas id="wheelCanvas" width="350" height="350"></canvas>
+  <div id="pointer"></div>
+</div>
+
+<div id="result"></div>
+
+<script src="script.js"></script>
 </body>
 </html>
