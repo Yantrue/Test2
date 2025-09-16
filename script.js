@@ -6,6 +6,11 @@ const result = document.getElementById('result');
 const canvas = document.getElementById('wheelCanvas');
 const ctx = canvas.getContext('2d');
 
+const popup = document.getElementById('popup');
+const popupMessage = document.getElementById('popupMessage');
+const popupOkBtn = document.getElementById('popupOkBtn');
+const popupRemoveBtn = document.getElementById('popupRemoveBtn');
+
 let names = [];
 let startAngle = 0;
 let arc = 0;
@@ -13,6 +18,7 @@ let spinTimeout = null;
 let spinAngleStart = 0;
 let spinTime = 0;
 let spinTimeTotal = 0;
+let winner = '';
 
 // Update daftar nama yang tampil di kotak sebelah
 function updateNamesList() {
@@ -78,27 +84,30 @@ function rotateWheel() {
   spinTimeout = setTimeout(rotateWheel, 30);
 }
 
-// Stop dan tunjukkan hasil
+// Stop dan tunjukkan hasil dengan popup custom
 function stopRotateWheel() {
   clearTimeout(spinTimeout);
   const degrees = startAngle * 180 / Math.PI + 90;
   const arcd = arc * 180 / Math.PI;
   const index = Math.floor((360 - (degrees % 360)) / arcd);
-  const winner = names[index];
+  winner = names[index];
 
   result.textContent = `Selamat kepada ${winner}!`;
-  alert(`Selamat kepada ${winner}! 🎉`);
 
-  spinBtn.disabled = false;
-  loadNamesBtn.disabled = false;
-  namesTextarea.disabled = false;
+  // tampilkan popup custom
+  popupMessage.textContent = `Selamat kepada ${winner}!`;
+  popup.classList.remove('hidden');
+
+  // disable tombol & textarea saat popup aktif
+  spinBtn.disabled = true;
+  loadNamesBtn.disabled = true;
+  namesTextarea.disabled = true;
 }
 
-// Fungsi easing untuk animasi halus
+// Fungsi easing untuk animasi halus (easeOutQuad)
 function easeOut(t, b, c, d) {
-  const ts = (t/=d)*t;
-  const tc = ts*t;
-  return b + c*(tc + -3*ts + 3*t);
+  t /= d;
+  return -c * t*(t-2) + b;
 }
 
 // Event muat nama dari textarea ke array
@@ -128,12 +137,40 @@ spinBtn.addEventListener('click', () => {
   if(names.length === 0) return;
   spinAngleStart = Math.floor(3600 + Math.random() * 360); // 10-11 putaran penuh
   spinTime = 0;
-  spinTimeTotal = 4000; // 4 detik durasi
+  spinTimeTotal = 8000; // 8 detik durasi
   spinBtn.disabled = true;
   loadNamesBtn.disabled = true;
   namesTextarea.disabled = true;
   result.textContent = '';
   rotateWheel();
+});
+
+// Tombol Oke popup
+popupOkBtn.addEventListener('click', () => {
+  popup.classList.add('hidden');
+  // enable tombol dan textarea lagi
+  spinBtn.disabled = false;
+  loadNamesBtn.disabled = false;
+  namesTextarea.disabled = false;
+});
+
+// Tombol Hapus nama popup
+popupRemoveBtn.addEventListener('click', () => {
+  // hapus nama pemenang dari array
+  names = names.filter(n => n !== winner);
+  updateNamesList();
+  drawWheel();
+  popup.classList.add('hidden');
+  // enable tombol dan textarea lagi
+  spinBtn.disabled = names.length === 0;
+  loadNamesBtn.disabled = false;
+  namesTextarea.disabled = false;
+
+  // Jika list kosong, kosongkan textarea dan result
+  if(names.length === 0) {
+    namesTextarea.value = '';
+    result.textContent = '';
+  }
 });
 
 // Inisialisasi tampilan
