@@ -130,3 +130,65 @@ button:disabled {
   background: #e7f0fe;
   overflow-y: auto;
 }
+
+/* Popup overlay */
+#popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+/* sembunyikan default */
+.hidden {
+  display: none;
+}
+
+#popupContent {
+  background: white;
+  padding: 25px 30px;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  max-width: 320px;
+  text-align: center;
+  font-size: 18px;
+  color: #333;
+}
+
+#popupButtons {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+#popupButtons button {
+  padding: 8px 18px;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.3s;
+}
+
+#popupOkBtn {
+  background-color: #6ca0dc;
+  color: white;
+}
+#popupOkBtn:hover {
+  background-color: #4a90e2;
+}
+
+#popupRemoveBtn {
+  background-color: #e25c5c;
+  color: white;
+}
+#popupRemoveBtn:hover {
+  background-color: #b33c3c;
+}
