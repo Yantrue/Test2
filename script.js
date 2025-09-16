@@ -20,19 +20,16 @@ let spinTime = 0;
 let spinTimeTotal = 0;
 let winner = '';
 
-// Update daftar nama yang tampil di kotak sebelah
 function updateNamesList() {
   if(names.length === 0) {
     namesList.textContent = 'Belum ada nama dimuat.';
     spinBtn.disabled = true;
     return;
   }
-  // tampilkan nama satu per baris
   namesList.textContent = names.join('\n');
   spinBtn.disabled = false;
 }
 
-// Gambar roda roulette sesuai daftar nama
 function drawWheel() {
   if(names.length === 0) return;
 
@@ -71,7 +68,6 @@ function drawWheel() {
   }
 }
 
-// Animasi putar roda
 function rotateWheel() {
   spinTime += 30;
   if(spinTime >= spinTimeTotal) {
@@ -84,7 +80,6 @@ function rotateWheel() {
   spinTimeout = setTimeout(rotateWheel, 30);
 }
 
-// Stop dan tunjukkan hasil dengan popup custom
 function stopRotateWheel() {
   clearTimeout(spinTimeout);
   const degrees = startAngle * 180 / Math.PI + 90;
@@ -94,82 +89,14 @@ function stopRotateWheel() {
 
   result.textContent = `Selamat kepada ${winner}!`;
 
-  // tampilkan popup custom
   popupMessage.textContent = `Selamat kepada ${winner}!`;
   popup.classList.remove('hidden');
 
-  // disable tombol & textarea saat popup aktif
   spinBtn.disabled = true;
   loadNamesBtn.disabled = true;
   namesTextarea.disabled = true;
 }
 
-// Fungsi easing untuk animasi halus (easeOutQuad)
 function easeOut(t, b, c, d) {
   t /= d;
-  return -c * t*(t-2) + b;
-}
-
-// Event muat nama dari textarea ke array
-loadNamesBtn.addEventListener('click', () => {
-  const raw = namesTextarea.value.trim();
-  if(!raw) {
-    alert('Masukkan minimal satu nama.');
-    return;
-  }
-  const inputNames = raw.split('\n')
-    .map(n => n.trim())
-    .filter(n => n.length > 0);
-
-  if(inputNames.length === 0) {
-    alert('Masukkan minimal satu nama.');
-    return;
-  }
-
-  // Hilangkan duplikat
-  names = [...new Set(inputNames)];
-  updateNamesList();
-  drawWheel();
-});
-
-// Event putar roulette
-spinBtn.addEventListener('click', () => {
-  if(names.length === 0) return;
-  spinAngleStart = Math.floor(3600 + Math.random() * 360); // 10-11 putaran penuh
-  spinTime = 0;
-  spinTimeTotal = 8000; // 8 detik durasi
-  spinBtn.disabled = true;
-  loadNamesBtn.disabled = true;
-  namesTextarea.disabled = true;
-  result.textContent = '';
-  rotateWheel();
-});
-
-// Tombol Oke popup
-popupOkBtn.addEventListener('click', () => {
-  console.log('Tombol Oke ditekan');
-  popup.classList.add('hidden');
-  spinBtn.disabled = false;
-  loadNamesBtn.disabled = false;
-  namesTextarea.disabled = false;
-});
-
-// Tombol Hapus nama popup
-popupRemoveBtn.addEventListener('click', () => {
-  console.log('Tombol Hapus nama ditekan');
-  names = names.filter(n => n !== winner);
-  updateNamesList();
-  drawWheel();
-  popup.classList.add('hidden');
-  spinBtn.disabled = names.length === 0;
-  loadNamesBtn.disabled = false;
-  namesTextarea.disabled = false;
-
-  if(names.length === 0) {
-    namesTextarea.value = '';
-    result.textContent = '';
-  }
-});
-
-// Inisialisasi tampilan
-updateNamesList();
+  return -c * t*(t-
