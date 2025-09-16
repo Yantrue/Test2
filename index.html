@@ -3,27 +3,29 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Roulette Nama</title>
+<title>wish spin</title>
 <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-<h1>Roulette Nama</h1>
+<h1>Wish spin</h1>
 
-<div id="inputArea">
-  <input type="text" id="nameInput" placeholder="Masukkan nama..." />
-  <button id="addNameBtn">Tambah</button>
-  <button id="spinBtn" disabled>Putar Roulette</button>
+<div id="container">
+  <div id="rouletteArea">
+    <div id="roulette">
+      <canvas id="wheelCanvas" width="350" height="350"></canvas>
+      <div id="pointer"></div>
+    </div>
+    <div id="result"></div>
+  </div>
+
+  <div id="inputArea">
+    <textarea id="namesTextarea" placeholder="Masukkan nama, satu per baris..."></textarea>
+    <button id="loadNamesBtn">Tambah</button>
+    <button id="spinBtn" disabled>Start</button>
+    <div id="namesList"></div>
+  </div>
 </div>
-
-<div id="namesList"></div>
-
-<div id="roulette">
-  <canvas id="wheelCanvas" width="350" height="350"></canvas>
-  <div id="pointer"></div>
-</div>
-
-<div id="result"></div>
 
 <script src="script.js"></script>
 </body>
